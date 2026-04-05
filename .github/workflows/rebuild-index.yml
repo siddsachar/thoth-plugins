@@ -1,0 +1,36 @@
+name: Rebuild Index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Rebuild index.json
+        run: python scripts/build_index.py
+
+      - name: Check for changes
+        id: check
+        run: |
+          git diff --quiet index.json || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit updated index
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          git commit -m "chore: rebuild index.json [skip ci]"
+          git push

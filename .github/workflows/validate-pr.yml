@@ -1,0 +1,110 @@
+name: Validate Plugin PR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Detect changed plugins
+        id: changed
+        run: |
+          # Get list of changed plugin directories
+          CHANGED=$(git diff --name-only origin/main...HEAD | grep '^plugins/' | cut -d'/' -f1-2 | sort -u)
+          echo "plugins<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "Changed plugins: $CHANGED"
+
+      - name: Validate each changed plugin
+        run: |
+          FAILED=0
+          while IFS= read -r plugin_path; do
+            if [ -z "$plugin_path" ] || [ ! -d "$plugin_path" ]; then
+              continue
+            fi
+            echo ""
+            echo "=========================================="
+            echo "Validating: $plugin_path"
+            echo "=========================================="
+
+            # Run validation script
+            python scripts/validate_plugin.py "$plugin_path" || FAILED=1
+
+            # Check dependencies
+            python scripts/check_core_deps.py "$plugin_path" || FAILED=1
+
+            # Run plugin tests if they exist
+            if [ -d "$plugin_path/tests" ]; then
+              echo "Running plugin tests..."
+              cd "$plugin_path"
+              python -m pytest tests/ -v || FAILED=1
+              cd -
+            fi
+
+          done <<< "${{ steps.changed.outputs.plugins }}"
+
+          if [ $FAILED -ne 0 ]; then
+            echo ""
+            echo "❌ Validation failed for one or more plugins"
+            exit 1
+          fi
+          echo ""
+          echo "✅ All plugins validated successfully"
+
+      - name: Post results to PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Plugin Validation')
+            );
+
+            const status = '${{ job.status }}' === 'success' ? '✅' : '❌';
+            const body = `## ${status} Plugin Validation
+
+            **Status**: ${{ job.status }}
+
+            The following checks were run:
+            - Plugin manifest validation
+            - Security scan (no eval/exec/subprocess/os.system)
+            - Core import guard
+            - Dependency conflict check
+            - Plugin tests (if present)
+
+            See the [Actions log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

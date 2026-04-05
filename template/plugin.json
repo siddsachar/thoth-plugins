@@ -1,0 +1,35 @@
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "version": "1.0.0",
+  "min_thoth_version": "3.12.0",
+  "author": {
+    "name": "Your Name",
+    "github": "your-github-username"
+  },
+  "description": "A brief one-line description of what the plugin does.",
+  "long_description": "A longer description shown in the marketplace. Supports markdown.",
+  "icon": "🔌",
+  "license": "MIT",
+  "tags": ["example"],
+  "homepage": "",
+  "repository": "",
+
+  "provides": {
+    "tools": [
+      {
+        "name": "my_tool",
+        "display_name": "My Tool",
+        "description": "Describe what this tool does for the AI agent"
+      }
+    ],
+    "skills": []
+  },
+
+  "settings": {
+    "api_keys": {},
+    "config": {}
+  },
+
+  "python_dependencies": []
+}
