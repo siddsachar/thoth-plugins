@@ -1,0 +1,50 @@
+{
+  "id": "thoth-rss-reader",
+  "name": "RSS Reader",
+  "version": "1.0.0",
+  "min_thoth_version": "3.12.0",
+  "author": {
+    "name": "Thoth",
+    "github": "siddsachar"
+  },
+  "description": "Subscribe to and read RSS/Atom feeds — manage subscriptions, fetch latest entries, and stay current on any topic.",
+  "long_description": "Add RSS and Atom feeds to Thoth and let the agent fetch the latest articles for you. Manage subscriptions with add/remove/list, pull new entries from a single feed or all feeds at once, sorted by date. Powered by feedparser for robust compatibility with virtually any feed format.",
+  "icon": "📡",
+  "license": "Apache-2.0",
+  "tags": ["rss", "atom", "feeds", "news", "reading"],
+  "homepage": "https://github.com/siddsachar/thoth-plugins",
+  "repository": "https://github.com/siddsachar/thoth-plugins",
+
+  "provides": {
+    "tools": [
+      {
+        "name": "rss_reader",
+        "display_name": "RSS Reader",
+        "description": "Manage RSS/Atom feed subscriptions and fetch the latest entries"
+      }
+    ],
+    "skills": [
+      {
+        "name": "rss_reader",
+        "display_name": "RSS Feed Reader",
+        "description": "Guides the agent on when and how to use the RSS Reader tool"
+      }
+    ]
+  },
+
+  "settings": {
+    "api_keys": {},
+    "config": {
+      "default_count": {
+        "type": "number",
+        "label": "Default number of entries",
+        "description": "How many feed entries to fetch per request (1-30)",
+        "default": 10
+      }
+    }
+  },
+
+  "python_dependencies": [
+    "feedparser>=6.0"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "thoth-hacker-news",
+  "name": "Hacker News Reader",
+  "version": "1.0.0",
+  "min_thoth_version": "3.12.0",
+  "author": {
+    "name": "Thoth",
+    "github": "siddsachar"
+  },
+  "description": "Browse and search Hacker News — top stories, new posts, and full-text search via Algolia.",
+  "long_description": "Access Hacker News directly from Thoth. Browse the front page, discover new posts, search the full HN archive via Algolia, and read story details with top comments — all without leaving your conversation. Zero configuration, no API key needed.",
+  "icon": "📰",
+  "license": "Apache-2.0",
+  "tags": ["news", "tech", "hacker-news", "search"],
+  "homepage": "https://github.com/siddsachar/thoth-plugins",
+  "repository": "https://github.com/siddsachar/thoth-plugins",
+
+  "provides": {
+    "tools": [
+      {
+        "name": "hacker_news",
+        "display_name": "Hacker News",
+        "description": "Browse and search Hacker News stories, comments, and discussions"
+      }
+    ],
+    "skills": [
+      {
+        "name": "hacker_news_reader",
+        "display_name": "Hacker News Reader",
+        "description": "Guides the agent on when and how to use the Hacker News tool"
+      }
+    ]
+  },
+
+  "settings": {
+    "api_keys": {},
+    "config": {
+      "default_count": {
+        "type": "number",
+        "label": "Default number of stories",
+        "description": "How many stories to fetch per request (1-30)",
+        "default": 10
+      }
+    }
+  },
+
+  "python_dependencies": []
+}
