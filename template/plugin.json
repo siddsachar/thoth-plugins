@@ -10,7 +10,7 @@
   "description": "A brief one-line description of what the plugin does.",
   "long_description": "A longer description shown in the marketplace. Supports markdown.",
   "icon": "🔌",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "tags": ["example"],
   "homepage": "",
   "repository": "",

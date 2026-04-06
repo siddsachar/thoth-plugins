@@ -9,7 +9,7 @@ All plugins submitted to the Thoth marketplace must follow these rules.
 | `plugin.json` | Plugin manifest (metadata, dependencies, settings) |
 | `plugin_main.py` | Entry point with `register(api)` function |
 | `README.md` | Description, setup instructions, usage examples |
-| `LICENSE` | OSI-approved license (MIT recommended) |
+| `LICENSE` | OSI-approved license (Apache-2.0 recommended) |
 
 ## Optional Files
 

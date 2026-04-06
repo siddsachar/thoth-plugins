@@ -63,4 +63,4 @@ All plugins must follow the [Plugin Standard](PLUGIN_STANDARD.md):
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+Apache 2.0 — see [LICENSE](LICENSE) for details.

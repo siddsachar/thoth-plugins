@@ -124,7 +124,7 @@ Open `plugins/your-plugin-id/plugin.json` and fill in your metadata:
   },
   "description": "Real-time weather alerts and forecasts.",
   "icon": "🌦️",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "tags": ["weather", "alerts", "utility"],
 
   "provides": {
@@ -291,7 +291,7 @@ See the [Testing Your Plugin Locally](#testing-your-plugin-locally) section belo
 |-------|------|---------|-------------|
 | `long_description` | string | `""` | Longer markdown description for marketplace |
 | `icon` | string | `"🔌"` | Emoji icon |
-| `license` | string | `"MIT"` | License identifier |
+| `license` | string | `"Apache-2.0"` | License identifier |
 | `tags` | string[] | `[]` | Search tags |
 | `homepage` | string | `""` | Project homepage URL |
 | `repository` | string | `""` | Source code URL |
@@ -439,10 +439,27 @@ Skills are auto-discovered from the `skills/` directory — no registration need
 
 ## Testing Your Plugin Locally
 
-### Method 1: Copy to Thoth's Plugin Directory
+### Method 1: Symlink for Development (Recommended)
+
+Create a symlink from Thoth's plugin directory to your working copy. This lets you edit code in place and reload without copying files each time.
 
 ```bash
-# Copy your plugin to Thoth's installed plugins directory
+# macOS/Linux:
+ln -s "$(pwd)/plugins/your-plugin" ~/.thoth/installed_plugins/your-plugin
+
+# Windows (run as Administrator):
+mklink /D "%USERPROFILE%\.thoth\installed_plugins\your-plugin" "%CD%\plugins\your-plugin"
+```
+
+After making changes, go to **Settings → Plugins** and click **"Reload Plugins"** — no restart needed. The plugin loader follows symlinks automatically.
+
+> **Tip:** Remove the symlink when you're done developing — don't leave symlinks in the installed directory for day-to-day use.
+
+### Method 2: Copy for Final Testing
+
+If you want to test exactly what users will get (a standalone copy), copy the files instead:
+
+```bash
 # macOS/Linux:
 cp -r plugins/your-plugin/ ~/.thoth/installed_plugins/your-plugin/
 
@@ -450,18 +467,20 @@ cp -r plugins/your-plugin/ ~/.thoth/installed_plugins/your-plugin/
 xcopy /E /I plugins\your-plugin\ %USERPROFILE%\.thoth\installed_plugins\your-plugin\
 ```
 
-Then restart Thoth. Check the logs for:
+Then go to **Settings → Plugins** and click **"Reload Plugins"** (or restart Thoth).
+
+Check the logs for:
 ```
 ✅ Plugin 'your-plugin' v1.0.0 loaded (1 tools, 0 skills)
 ```
 
-### Method 2: Run Validation Script
+### Method 3: Run Validation Script
 
 ```bash
 python scripts/validate_plugin.py plugins/your-plugin/
 ```
 
-### Method 3: Run Your Tests
+### Method 4: Run Your Tests
 
 ```bash
 cd plugins/your-plugin
